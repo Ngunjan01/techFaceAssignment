@@ -19,6 +19,3 @@
     },
   });
 
-  export const setSelectedChat = ({ set }, chat) => {
-    set(selectedChatState, chat);
-  };

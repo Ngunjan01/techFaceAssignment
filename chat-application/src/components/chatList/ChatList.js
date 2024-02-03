@@ -26,7 +26,6 @@ const ChatList = () => {
     setChats([...chats, newChat]);
     selectChat(newChat);
   };
-
   const selectChat = (chat) => {
     setChats((prevChats) =>
       prevChats.map((c) =>
@@ -35,6 +34,7 @@ const ChatList = () => {
     );
     setChatState(chat);
   };
+  console.log(selectedChat,"selectedChat");
 
   const deleteChat = (chatId) => {
     setChats((prevChats) => prevChats.filter((chat) => chat.id !== chatId));

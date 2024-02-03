@@ -1,7 +1,7 @@
 // ChatWindow.js
 import React, { useState,useRef,useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectedChatState, selectedChatMessagesSelector } from '../../atoms/ChatState';
+import { selectedChatState, selectedChatMessagesSelector ,chatsState} from '../../atoms/ChatState';
 import './ChatWindow.css';
 
 const ChatWindow = () => {
@@ -9,15 +9,46 @@ const ChatWindow = () => {
   const messages = useRecoilValue(selectedChatMessagesSelector);
   const [newMessage, setNewMessage] = useState('');
   const [chatState, setChatState] = useRecoilState(selectedChatState);
+  const [chats, setChats] = useRecoilState(chatsState);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
+  
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const receiveMessage = () => {
+
+    console.log('here')
+    const receivedMessage = {
+      user: 'Other User',
+      timestamp: new Date(),
+      content: 'This is a received message.',
+    };
+
+    setChatState((prevChat) => ({
+      ...prevChat,
+      messages: [receivedMessage, ...prevChat?.messages.filter(message => message.user === 'You')],
+    }));
+
+    const updatedChat = {
+      ...chatState,
+      messages: [...chatState.messages, receivedMessage],
+    }; 
+
+    // const updatedArray = chats.map(obj => 
+    //   obj.id === updatedChat.id ? { ...obj, messages: [...obj.messages, ...updatedChat.messages] } : obj
+    // );
+    setChats(prevState => {
+      return prevState.map(obj =>
+        obj.id === updatedChat.id ? { ...obj, messages: [...obj.messages, ...updatedChat.messages] } : obj
+      );
+    });
+  };
+
   const sendMessage = () => {
     if (newMessage.trim() === '' || !chatState) return;
 
@@ -26,28 +57,26 @@ const ChatWindow = () => {
       messages: [...chatState.messages, { user: 'You', timestamp: new Date(), content: newMessage }],
     };
 
+    const updatedArray = chats.map(obj => 
+      obj.id === updatedChat.id ? { ...obj, messages: updatedChat.messages } : obj
+    );
+
+
     setChatState(updatedChat);
+
+    setChats(updatedArray);
     setNewMessage('');
+    setTimeout(() => {
+      receiveMessage(); 
+    },3000)
   };
-  
-  useEffect(() => {
-    const receiveMessage = () => {
-      const receivedMessage = {
-        user: 'Other User',
-        timestamp: new Date(),
-        content: 'This is a received message.',
-      };
+  console.log(chats,"chats");
+  // useEffect(() => {
+    
+  //   const receiveMessageTimeout = setTimeout(receiveMessage, 1000);
 
-      setChatState((prevChat) => ({
-        ...prevChat,
-        messages: [receivedMessage, ...prevChat?.messages.filter(message => message.user === 'You')],
-      }));
-    };
-
-    const receiveMessageTimeout = setTimeout(receiveMessage, 3000);
-
-    return () => clearTimeout(receiveMessageTimeout);
-  }, [setChatState]);
+  //   return () => clearTimeout(receiveMessageTimeout);
+  // }, [setChatState]);
 
   // Reset the message state when switching between chats
   useEffect(() => {
