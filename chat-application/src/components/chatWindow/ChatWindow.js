@@ -105,8 +105,13 @@ const ChatWindow = () => {
           <div>
             {messages.map((message, index) => (
               <div key={index} className="message">
-                <strong>{`${message.user}: `}</strong>
-                {`${message.content} - ${message.timestamp.toLocaleString()}`}
+                <div className='message-content'>
+                <strong style={{ whiteSpace: 'pre-wrap' }}>{`${message.user}:  `}</strong>
+                <p>{message.content}</p>
+                </div>
+                <div>
+                  <p className='message-date'>{message.timestamp.toLocaleString()}</p>
+                </div>
               </div>
             ))}
             <div ref={messagesEndRef} />

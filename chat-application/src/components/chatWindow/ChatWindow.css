@@ -13,8 +13,22 @@
 
 .message {
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: initial;
+  justify-content: space-between;
+}
+.message-content{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+
 }
 
+.message-date{
+  font-size: smaller;
+  font-weight: 100;
+}
 .input-container {
   margin-top: 20px;
 }
